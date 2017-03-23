@@ -11,17 +11,16 @@ const int gridWidth = 8;
 char grid[gridWidth][gridHeight];
 int numbs[gridWidth];
 void initialise();
-void playerOne(char arr[][gridHeight]);
-void playerTwo(char arr[][gridHeight]);
-void testMove(char arr[][gridHeight]);
-void testWin(char arr[][gridHeight]);
+void player();
+void testMove();
+void testWin();
 void testPlayAgain();
 int victory = 0, draw = 0, go = 0, caller = 0, index = 0;
 
 int main()
 {
 	initialise();
-	playerOne(grid);
+	player();
 	testPlayAgain();
 	system("Pause");
 	return 0;
@@ -50,13 +49,23 @@ void initialise()
 	cout << "Initialise succeeded." << endl;
 }
 
-void playerOne(char arr[][gridHeight])
+void player()
 {
-	cout << "Player 1 move:" << endl;
+	if (caller % 2 == 0)
+	{
+		cout << "Player 1 move:" << endl;
+	}
+	else cout << "Player 2 move:" << endl;
+
 	cin >> go;
-	caller = 1;
-	testMove(arr);
-	grid[go][index] = 'X';
+	testMove();
+
+	if (caller % 2 == 0)
+	{
+		grid[go][index] = 'X';
+	}
+	else grid[go][index] = 'O';
+	
 	for (int j = 0; j < gridHeight; j++)
 	{
 		for (int i = 0; i < gridWidth; i++)
@@ -71,43 +80,15 @@ void playerOne(char arr[][gridHeight])
 		cout << numbs[i] << " ";
 	}
 	cout << endl;
-	testWin(grid);
+	testWin();
 }
 
-void playerTwo(char arr[][gridHeight])
-{
-	cout << "Player 2 move:" << endl;
-	cin >> go;
-	caller = 2;
-	testMove(arr);
-	grid[go][index] = 'O';
-	for (int j = 0; j < gridHeight; j++)
-	{
-		for (int i = 0; i < gridWidth; i++)
-		{
-			cout << grid[i][j] << " ";
-		}
-		cout << endl;
-	}
-	for (int i = 0; i < gridWidth; i++)
-	{
-		numbs[i] = i;
-		cout << numbs[i] << " ";
-	}
-	cout << endl;
-	testWin(grid);
-}
-
-void testMove(char arr[][gridHeight])
+void testMove()
 {
 	if (go > gridWidth - 1|| go < 0)
 	{
 		cout << "Error, please enter valid move" << endl;
-		if (caller == 1)
-		{
-			playerOne(grid);
-		}
-		else playerTwo(grid);
+		player();
 	}
 	int i = gridHeight - 1;
 	while (grid[go][i] == 'X' || grid[go][i] == 'O')
@@ -116,36 +97,33 @@ void testMove(char arr[][gridHeight])
 		if (i < 0)
 		{
 			cout << "Error, please enter valid move" << endl;
-			if (caller == 1)
-			{
-				playerOne(grid);
-			}
-			else playerTwo(grid);
+			player();
 		}
 	}
 	index = i;
 }
 
-void testWin(char arr[][gridHeight])
+void testWin()
 {
+	//Check vertical
 	if (index < gridHeight - 3)
 	{			
 		if (grid[go][index] == grid[go][index + 1] && grid[go][index + 1] == grid[go][index + 2] && grid[go][index + 2] == grid[go][index + 3])
 		{
-			//cout << "Game is won (vertical)" << endl;
-			victory = 1;
-		}
-	}
-	
-	for (int i = go - 3; i < go + 1; i++)
-	{
-		if (i >= 0 && i < gridWidth - 3 && grid[i][index] == grid[i + 1][index] && grid[i + 1][index] == grid[i + 2][index] && grid[i + 2][index] == grid[i + 3][index])
-		{
-			//cout << "Game is won (horizontal)" << endl;
 			victory = 1;
 		}
 	}
 
+	//Check horizontal
+	for (int i = go - 3; i < go + 1; i++)
+	{
+		if (i >= 0 && i < gridWidth - 3 && grid[i][index] == grid[i + 1][index] && grid[i + 1][index] == grid[i + 2][index] && grid[i + 2][index] == grid[i + 3][index])
+		{
+			victory = 1;
+		}
+	}
+
+	//Check diagonal (top left to bottom right)
 	int index2 = index - 3;
 	for (int i = go - 3; i < go + 1; i++)
 	{
@@ -160,6 +138,7 @@ void testWin(char arr[][gridHeight])
 		index2++;
 	}
 
+	//Check diagonal (bottom left to top right)
 	index2 = index + 3;
 	for (int i = go - 3; i < go + 1; i++)
 	{
@@ -174,6 +153,7 @@ void testWin(char arr[][gridHeight])
 		index2--;
 	}
 
+	//Check if all slots filled
 	for (int i = 0; i < gridWidth; i++)
 	{
 		if (grid[i][0] != '*'){}
@@ -186,7 +166,7 @@ void testWin(char arr[][gridHeight])
 
 	if (victory == 1)
 	{
-		if (caller == 1)
+		if (caller % 2 == 0)
 		{
 			cout << "Player 1 wins!" << endl;
 		}
@@ -198,11 +178,8 @@ void testWin(char arr[][gridHeight])
 	}
 	else
 	{
-		if (caller == 1)
-		{
-			playerTwo(grid);
-		}
-		else playerOne(grid);
+		++caller;
+		player();
 	}
 }
 
