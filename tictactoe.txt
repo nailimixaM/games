@@ -1,0 +1,218 @@
+// A Human-Human Tic-Tac-Toe game
+
+#include "stdafx.h"
+#include <iostream>
+#include <cstdlib>
+#include <string>
+using namespace std;
+
+const int gridLength = 3;
+char grid[gridLength][gridLength];
+void playerOne(char arr[][gridLength]);
+void playerTwo(char arr[][gridLength]);
+void testMove(char arr[][gridLength], int m);
+void testWin(char arr[][gridLength]);
+void initialise();
+void testPlayAgain();
+int moves[9];
+int m, caller = 0, victory = 0, draw = 0;
+
+int main()
+{	
+	initialise();
+	playerOne(grid);
+	testPlayAgain();
+	system("Pause");
+	return 0;
+}
+
+void initialise()
+{
+	cout << "Initialising tic-tac-toe grid..." << endl;
+	for (int j = 0; j < gridLength; j++)
+	{
+		for (int i = 0; i < gridLength; i++)
+		{
+			grid[i][j] = '*';
+		}
+	}
+	for (int j = 0; j < gridLength; j++)
+	{
+		for (int i = 0; i < gridLength; i++)
+		{
+			cout << grid[i][j] << " ";
+		}
+		cout << endl;
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		moves[i] = 0;
+	}
+	victory = 0;
+	draw = 0;
+	cout << "Initialise succeeded." << endl;
+}
+
+void playerOne(char arr[][gridLength])
+{
+	cout << "Player 1 move:" << endl;
+	cin >> m;
+	caller = 1;
+	testMove(arr, m);
+	switch (m)
+	{
+	case 1: arr[0][0] = 'x';
+		break;
+	case 2: arr[1][0] = 'x';
+		break;
+	case 3: arr[2][0] = 'x';
+		break;
+	case 4: arr[0][1] = 'x';
+		break;
+	case 5: arr[1][1] = 'x';
+		break;
+	case 6: arr[2][1] = 'x';
+		break;
+	case 7: arr[0][2] = 'x';
+		break;
+	case 8: arr[1][2] = 'x';
+		break;
+	case 9: arr[2][2] = 'x';
+		break;
+	}
+	for (int j = 0; j < gridLength; j++)
+	{
+		for (int i = 0; i < gridLength; i++)
+		{
+			cout << grid[i][j] << " ";
+		}
+		cout << endl;
+	}
+	testWin(arr);
+	if (victory == 1)
+	{
+		cout << "Player One (x) wins!" << endl;
+	}
+	else if (draw == 0)
+	{
+		playerTwo(arr);
+	}
+}
+
+void playerTwo(char arr[][gridLength])
+{
+	cout << "Player 2 move:" << endl;
+	cin >> m;
+	caller = 2;
+	testMove(arr, m);
+	switch (m)
+	{
+	case 1: arr[0][0] = 'o';
+		break;
+	case 2: arr[1][0] = 'o';
+		break;
+	case 3: arr[2][0] = 'o';
+		break;
+	case 4: arr[0][1] = 'o';
+		break;
+	case 5: arr[1][1] = 'o';
+		break;
+	case 6: arr[2][1] = 'o';
+		break;
+	case 7: arr[0][2] = 'o';
+		break;
+	case 8: arr[1][2] = 'o';
+		break;
+	case 9: arr[2][2] = 'o';
+		break;
+	}
+	for (int j = 0; j < gridLength; j++)
+	{
+		for (int i = 0; i < gridLength; i++)
+		{
+			cout << grid[i][j] << " ";
+		}
+		cout << endl;
+	}
+	testWin(arr);
+	if (victory == 1)
+	{
+		cout << "Player Two (o) wins!" << endl;
+	}
+	else if (draw == 0)
+	{
+		playerOne(arr);
+	}
+}
+
+void testMove(char arr[][gridLength], int m)
+{
+	if (moves[m - 1] != 0)
+	{
+		cout << "Error: you can not play here, please try again." << endl;
+		if (caller == 1)
+		{
+			playerOne(arr);
+		}
+		else playerTwo(arr);
+	}
+	else
+	{
+		moves[m - 1] = 1;
+	}
+}
+
+void testWin(char arr[][gridLength])
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (arr[i][0] == arr[i][1] && arr[i][0] == arr[i][2] && arr[i][0] != '*')	// test columns
+		{
+			victory = 1;
+		}
+		if (arr[0][i] == arr[1][i] && arr[0][i] == arr[2][i] && arr[0][i] != '*')	// test rows
+		{
+			victory = 1;
+		}
+	}
+	for (int i = 0; i < 3; i = i + 2)
+	{
+		if (arr[i][0] == arr[1][1] && arr[1][1] == arr[2 - i][2] && arr[i][i] != '*')
+		{
+			victory = 1;
+		}
+	}
+	if (victory!=1)
+	{
+		int x = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++){
+				if (arr[i][j] == '*')
+				{
+					x++;
+				}
+			}
+		}
+		if (x == 0)
+		{
+			draw = 1;
+			cout << "Game is drawn!" << endl;
+		}
+	}
+}
+
+void testPlayAgain()
+{
+	cout << "Would you like to play another game? (yes/no)" << endl;
+	string answer;
+	cin >> answer;
+	getline(cin, answer);
+	string yes;
+	if (!answer.compare(yes))
+	{
+		main();
+	}
+	else cout << "Goodbye." << endl;
+}
+	
